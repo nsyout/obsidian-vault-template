@@ -1,0 +1,14 @@
+{
+  "daily-notes": [
+    {
+      "modifiers": ["Mod"],
+      "key": "D"
+    }
+  ],
+  "zk-prefixer": [
+    {
+      "modifiers": ["Mod"],
+      "key": "U"
+    }
+  ]
+}

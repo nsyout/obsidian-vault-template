@@ -1,0 +1,9 @@
+views:
+  - type: table
+    name: Table
+    filters:
+      and:
+        - file.name.startsWith("HOW -")
+        - file.ext == "md"
+    order:
+      - file.name

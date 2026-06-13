@@ -1,0 +1,11 @@
+{
+  "useWebWorker": true,
+  "dialect": 0,
+  "delay": -1,
+  "userDictionary": [],
+  "ignoredLints": "{\"context_hashes\":[]}",
+  "lintSettings": {
+    "BoringWords": true,
+    "SpelledNumbers": true
+  }
+}

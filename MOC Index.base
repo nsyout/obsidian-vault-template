@@ -1,0 +1,9 @@
+views:
+  - type: table
+    name: All MOCs
+    filters:
+      and:
+        - file.ext == "base"
+        - file.name.contains("MOC")
+    order:
+      - file.name
