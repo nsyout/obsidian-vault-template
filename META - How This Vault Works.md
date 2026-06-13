@@ -19,15 +19,14 @@ PREFIX - Note Title.md
 Examples:
 - `HOW - De-skunk Mixture.md`
 - `HOW - Set Up a New Mac.md`
-- `REF - Favorite Podcasts.md`
-- `REF - People Worth Following.md`
+- `HOW - De-skunk Mixture.md`
+- `HOW - Set Up a New Mac.md`
 
 **Starter prefixes in this vault:**
 
 | Prefix | Category |
 |--------|----------|
 | `HOW` | Step-by-step procedural notes — how to do a specific thing |
-| `REF` | Reference lists and collections — resources, people, links |
 
 **Adding a new prefix:** Pick a short (2-5 char) uppercase abbreviation. Create one `.base` MOC file for it (copy any existing one, change the `startsWith` filter). That's it.
 
