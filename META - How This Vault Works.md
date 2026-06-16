@@ -41,14 +41,12 @@ Each `PREFIX - MOC - Name.md` file is an index of every note with that prefix. T
 **How a MOC works:**
 
 ```markdown
-#moc
-
 ## Index
 %% concordance:start %%
 %% concordance:end %%
 ```
 
-Concordance watches notes whose filename starts with the MOC's prefix (e.g. `HOW -`) and writes them as `[[wiki links]]` between the markers. The `#moc` tag is what `MOC Index.base`'s tag view picks up. Why markdown MOCs over pure Bases queries? Markdown MOCs travel — they're plain text wiki-link lists that work in any tool, sync cleanly through git, and let you add prose, sub-headings, or pinned links above the auto-generated section. Bases queries only render inside Obsidian.
+Concordance watches notes whose filename starts with the MOC's prefix (e.g. `HOW -`) and writes them as `[[wiki links]]` between the markers. Nothing else is required in the file — no tags, no frontmatter. Why markdown MOCs over pure Bases queries? Markdown MOCs travel — they're plain text wiki-link lists that work in any tool, sync cleanly through git, and let you add prose, sub-headings, or pinned links above the auto-generated section. Bases queries only render inside Obsidian.
 
 > **Requires the Concordance community plugin.** Without it, the marker blocks stay empty. See the Plugins section below for install steps.
 
@@ -152,7 +150,20 @@ Obsidian stores every community plugin's settings in `.obsidian/plugins/<plugin-
 
 The plugin binaries (`main.js`, `manifest.json`, `styles.css`) are **not** committed. You install those once via BRAT or a release zip; afterward they live alongside `data.json` in the same folder.
 
-#### Concordance settings (`.obsidian/plugins/concordance/data.json`)
+#### Concordance modes (background)
+
+Concordance can build an index in four ways — each is called a "mode":
+
+| Mode | Index includes notes that… |
+|------|---------------------------|
+| `prefix` | Have a filename starting with a given prefix (e.g. `HOW -`) |
+| `folder` | Live in a given folder |
+| `tag` | Carry a given tag |
+| `property` | Have a given frontmatter property (optionally matching a value) |
+
+This vault uses **prefix mode exclusively**. The settings below configure prefix-mode behavior. You can still drop a folder/tag/property MOC into the vault if you ever want one — those would override the mode inline in their start marker (e.g. `%% concordance:start mode=folder folder=Recipes %%`) and ignore the prefix-mode defaults.
+
+#### Prefix-mode settings (`.obsidian/plugins/concordance/data.json`)
 
 ```json
 {
@@ -169,15 +180,15 @@ The plugin binaries (`main.js`, `manifest.json`, `styles.css`) are **not** commi
 
 | Key | What it does | Why this value |
 |-----|--------------|----------------|
-| `indexFilenameTemplate` | Filename pattern that identifies a MOC. `{PREFIX}` is the uppercase abbreviation; `{DISPLAY_NAME}` is the human-readable label after `MOC -`. | Matches this vault's `PREFIX - MOC - Name.md` convention so Concordance can pair each MOC with its prefix. |
-| `childFilenamePrefixTemplate` | Pattern a note must start with to be indexed by a given MOC. | `HOW -` notes get listed in the `HOW - MOC - …` file, etc. |
-| `startMarker` / `endMarker` | The literal HTML-comment strings that fence the auto-managed list inside a MOC. | Comment syntax means the markers are invisible in reading view but stable for the plugin to find. |
-| `autoIndexHeading` | The heading Concordance inserts above the markers if you let it scaffold a missing block. | We always put the index under a `## Index` heading. |
+| `indexFilenameTemplate` | Filename pattern that identifies a prefix-mode MOC. `{PREFIX}` is the uppercase abbreviation; `{DISPLAY_NAME}` is the human-readable label after `MOC -`. | Matches this vault's `PREFIX - MOC - Name.md` convention so Concordance can pair each MOC with its prefix. |
+| `childFilenamePrefixTemplate` | Pattern a child note must start with to be indexed by its MOC. | `HOW -` notes get listed in the `HOW - MOC - …` file, etc. |
+| `startMarker` / `endMarker` | The literal HTML-comment strings that fence the auto-managed list inside a MOC. Also where you'd put inline overrides like `mode=folder folder=Recipes`. | Comment syntax means the markers are invisible in reading view but stable for the plugin to find. |
+| `autoIndexHeading` | The heading Concordance inserts above the markers if it scaffolds a missing block. | We always put the index under a `## Index` heading. |
 | `missingBlockBehavior` | What to do when a MOC has no marker block: `ask`, `insert`, or `skip`. | `ask` prevents the plugin from silently editing files you weren't expecting it to. |
 | `excludedFolders` | Folders whose contents should be ignored when building indexes. | Empty — `Daily Notes/`, `Clippings/`, etc. already won't match the prefix pattern, so no exclusions needed. |
 | `excludedFilenameTerms` | Substrings that exclude a file from indexing even if it matches the prefix. | Empty for the same reason. |
 
-To change any of these, edit `data.json` directly or use Settings → Community Plugins → Concordance — both write to the same file.
+To change any of these, edit `data.json` directly or use Settings → Community Plugins → Concordance → Prefix mode defaults — both write to the same file.
 
 ---
 
@@ -210,8 +221,6 @@ Only two custom bindings are set. Everything else is the Obsidian default.
 1. Pick a prefix — 1–4 uppercase characters (e.g. `FIN` for finance)
 2. Create `FIN - MOC - Finance.md` with:
 ```markdown
-#moc
-
 ## Index
 %% concordance:start %%
 %% concordance:end %%
