@@ -1,0 +1,10 @@
+{
+  "indexFilenameTemplate": "{PREFIX} - MOC - {DISPLAY_NAME}",
+  "childFilenamePrefixTemplate": "{PREFIX} - ",
+  "startMarker": "%% concordance:start %%",
+  "endMarker": "%% concordance:end %%",
+  "autoIndexHeading": "Index",
+  "missingBlockBehavior": "ask",
+  "excludedFolders": [],
+  "excludedFilenameTerms": []
+}

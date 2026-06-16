@@ -3,7 +3,7 @@ views:
     name: All MOCs
     filters:
       and:
-        - file.ext == "base"
+        - file.ext == "md"
         - file.name.contains("MOC")
     order:
       - file.name

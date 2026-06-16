@@ -34,16 +34,23 @@ Examples:
 
 ## MOCs (Maps of Content)
 
-Each `PREFIX - MOC - Name.base` file is a live query — it automatically shows every note with that prefix. You never need to update it manually.
+Each `PREFIX - MOC - Name.md` file is an index of every note with that prefix. The list between the `%% concordance:start %%` and `%% concordance:end %%` markers is regenerated automatically by the [Concordance plugin](https://github.com/nsyout/concordance) — you never edit it by hand.
 
-`MOC Index.base` shows all MOCs in one place. Use it as your home base.
+[[MOC Index.base]] shows all MOCs in one place. Use it as your home base. (It's a `.base` because it's a one-shot filter over filenames, not a managed index.)
 
-**Filter approach:** MOCs use two filters:
-```yaml
-- file.name.startsWith("PREFIX -")
-- file.ext == "md"
+**How a MOC works:**
+
+```markdown
+#moc
+
+## Index
+%% concordance:start %%
+%% concordance:end %%
 ```
-`startsWith` is enforced by the naming convention — zero overhead per note. `ext == "md"` keeps `.base` files out of the results. Tags were considered as an alternative (they'd allow a note to appear in multiple MOCs) but require adding a tag to every note, which drifts. One note, one MOC is the right constraint for a personal vault.
+
+Concordance watches notes whose filename starts with the MOC's prefix (e.g. `HOW -`) and writes them as `[[wiki links]]` between the markers. The `#moc` tag is what `MOC Index.base`'s tag view picks up. Why markdown MOCs over pure Bases queries? Markdown MOCs travel — they're plain text wiki-link lists that work in any tool, sync cleanly through git, and let you add prose, sub-headings, or pinned links above the auto-generated section. Bases queries only render inside Obsidian.
+
+> **Requires the Concordance community plugin.** Without it, the marker blocks stay empty. See the Plugins section below for install steps.
 
 ---
 
@@ -132,9 +139,12 @@ Intentionally disabled: Graph View, Canvas, Outgoing Links, Tag Pane, Workspaces
 
 | Plugin | Purpose | Install |
 |--------|---------|---------|
+| [Concordance](https://github.com/nsyout/concordance) | **Required.** Auto-populates MOC index lists between `%% concordance:start/end %%` markers | Install via [BRAT](https://github.com/TfTHacker/obsidian42-brat) → add beta plugin `nsyout/concordance`, or download a release and unzip into `.obsidian/plugins/concordance/` |
 | [Harper](https://github.com/elijah-potter/harper) | Grammar and spell checking | Settings → Community Plugins → Browse → search "Harper" |
 
-**Note:** Community plugins require a one-time manual enable in Settings → Community Plugins after installing. The config in `.obsidian/plugins/harper/data.json` pre-sets Harper to American English with `BoringWords` and `SpelledNumbers` rules enabled.
+**Note:** Community plugins require a one-time manual enable in Settings → Community Plugins after installing. The pre-shipped `data.json` files configure each plugin: Harper is set to American English with `BoringWords` and `SpelledNumbers` enabled; Concordance is set to the `PREFIX - MOC - Name` convention and the marker pair this vault uses.
+
+**Without Concordance**, MOC files still exist but their index sections stay empty. You can either install the plugin or rewrite the MOCs as `.base` filter files (see [the personal vault README](https://github.com/nsyout/obsidian-vault-template) for the prior pure-Bases approach).
 
 ---
 
@@ -165,16 +175,13 @@ Only two custom bindings are set. Everything else is the Obsidian default.
 ## Adding a New Category
 
 1. Pick a prefix (e.g. `FIN` for finance)
-2. Create `FIN - MOC - Finance.base` with:
-```yaml
-views:
-  - type: table
-    name: Table
-    filters:
-      and:
-        - file.name.startsWith("FIN -")
-    order:
-      - file.name
+2. Create `FIN - MOC - Finance.md` with:
+```markdown
+#moc
+
+## Index
+%% concordance:start %%
+%% concordance:end %%
 ```
-3. Start creating notes with the `FIN -` prefix
+3. Start creating notes with the `FIN -` prefix — Concordance will fill the marker block as you go
 4. Update this file's prefix table above
