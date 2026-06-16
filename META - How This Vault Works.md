@@ -28,7 +28,7 @@ Examples:
 |--------|----------|
 | `HOW` | Step-by-step procedural notes — how to do a specific thing |
 
-**Adding a new prefix:** Pick a short (2-5 char) uppercase abbreviation. Create one `.base` MOC file for it (copy any existing one, change the `startsWith` filter). That's it.
+**Prefix length:** 1–4 uppercase characters, max. Short enough that you can type it fast and it doesn't dominate the filename. If it's longer than 4, pick a tighter abbreviation. See "Adding a New Category" below for how to scaffold the MOC file.
 
 ---
 
@@ -146,6 +146,39 @@ Intentionally disabled: Graph View, Canvas, Outgoing Links, Tag Pane, Workspaces
 
 **Without Concordance**, MOC files still exist but their index sections stay empty. You can either install the plugin or rewrite the MOCs as `.base` filter files (see [the personal vault README](https://github.com/nsyout/obsidian-vault-template) for the prior pure-Bases approach).
 
+#### How plugin settings work
+
+Obsidian stores every community plugin's settings in `.obsidian/plugins/<plugin-id>/data.json`. The plugin reads this file when it's enabled, and writes back to it whenever you change a setting in Settings → Community Plugins → (plugin). It's plain JSON, so you can edit it directly or commit it to version control to share config across machines/clones. This template ships the `data.json` for both Concordance and Harper so they're pre-configured the moment you enable them — there's no separate setup step.
+
+The plugin binaries (`main.js`, `manifest.json`, `styles.css`) are **not** committed. You install those once via BRAT or a release zip; afterward they live alongside `data.json` in the same folder.
+
+#### Concordance settings (`.obsidian/plugins/concordance/data.json`)
+
+```json
+{
+  "indexFilenameTemplate": "{PREFIX} - MOC - {DISPLAY_NAME}",
+  "childFilenamePrefixTemplate": "{PREFIX} - ",
+  "startMarker": "%% concordance:start %%",
+  "endMarker": "%% concordance:end %%",
+  "autoIndexHeading": "Index",
+  "missingBlockBehavior": "ask",
+  "excludedFolders": [],
+  "excludedFilenameTerms": []
+}
+```
+
+| Key | What it does | Why this value |
+|-----|--------------|----------------|
+| `indexFilenameTemplate` | Filename pattern that identifies a MOC. `{PREFIX}` is the uppercase abbreviation; `{DISPLAY_NAME}` is the human-readable label after `MOC -`. | Matches this vault's `PREFIX - MOC - Name.md` convention so Concordance can pair each MOC with its prefix. |
+| `childFilenamePrefixTemplate` | Pattern a note must start with to be indexed by a given MOC. | `HOW -` notes get listed in the `HOW - MOC - …` file, etc. |
+| `startMarker` / `endMarker` | The literal HTML-comment strings that fence the auto-managed list inside a MOC. | Comment syntax means the markers are invisible in reading view but stable for the plugin to find. |
+| `autoIndexHeading` | The heading Concordance inserts above the markers if you let it scaffold a missing block. | We always put the index under a `## Index` heading. |
+| `missingBlockBehavior` | What to do when a MOC has no marker block: `ask`, `insert`, or `skip`. | `ask` prevents the plugin from silently editing files you weren't expecting it to. |
+| `excludedFolders` | Folders whose contents should be ignored when building indexes. | Empty — `Daily Notes/`, `Clippings/`, etc. already won't match the prefix pattern, so no exclusions needed. |
+| `excludedFilenameTerms` | Substrings that exclude a file from indexing even if it matches the prefix. | Empty for the same reason. |
+
+To change any of these, edit `data.json` directly or use Settings → Community Plugins → Concordance — both write to the same file.
+
 ---
 
 ## Hotkeys
@@ -174,7 +207,7 @@ Only two custom bindings are set. Everything else is the Obsidian default.
 
 ## Adding a New Category
 
-1. Pick a prefix (e.g. `FIN` for finance)
+1. Pick a prefix — 1–4 uppercase characters (e.g. `FIN` for finance)
 2. Create `FIN - MOC - Finance.md` with:
 ```markdown
 #moc
